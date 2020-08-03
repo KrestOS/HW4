@@ -2,8 +2,8 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class XOgame {
-    static final int SIZE = 3;
-//    static final int DOTS_TO_WIN = 3;
+    static final int SIZE = 5;
+    static final int DOTS_TO_WIN = 4;
 
     static final char DOT_X = 'X';
     static final char DOT_O = 'O';
@@ -42,6 +42,7 @@ public class XOgame {
             }
 
         }
+
     }
 
 
@@ -90,12 +91,23 @@ public class XOgame {
 
     public static void aiTurn() {
         int x, y;
-
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (isCellValid(i, j)) {
+                    map[i][j] = DOT_X;
+                    if (checkWin(DOT_X)) {
+                        map[i][j] = DOT_O;
+                        return;
+                    }
+                    map[i][j] = DOT_EMPTY;
+                }
+            }
+        }
         do {
             x = random.nextInt(SIZE);
             y = random.nextInt(SIZE);
-        } while (!isCellValid(y, x));
 
+        }while (!isCellValid(y,x));
         map[y][x] = DOT_O;
     }
 
@@ -110,8 +122,33 @@ public class XOgame {
         return true;
     }
 
+    public static boolean checkLine(int cy, int cx, int vy, int vx,char c) {
+        if (cx + vx * (DOTS_TO_WIN - 1) > SIZE - 1 || cy + vy * (DOTS_TO_WIN - 1) > SIZE - 1 || cy + vy * (DOTS_TO_WIN - 1) < 0) {
+            return false;
+        }
+
+            for (int i = 0; i < DOTS_TO_WIN; i++) {
+
+                if (map[cy + i * vy][cx + i * vx] != c) {
+                    return false;
+                }
+            }
+            return true;
+        }
     public static boolean checkWin(char c) {
-        if (map[0][0] == c && map[0][1] == c && map[0][2] == c) {return true; }
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+
+                if (checkLine(i,j,0,1,c) || checkLine(i,j,1,0,c)
+                        || checkLine(i,j,1,1,c) || checkLine(i,j,-1,1, c)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+        /*if (map[0][0] == c && map[0][1] == c && map[0][2] == c) {return true; }
         if (map[1][0] == c && map[1][1] == c && map[1][2] == c) {return true; }
         if (map[2][0] == c && map[2][1] == c && map[2][2] == c) {return true; }
 
@@ -122,7 +159,7 @@ public class XOgame {
         if (map[0][0] == c && map[1][1] == c && map[2][2] == c) {return true; }
         if (map[0][2] == c && map[1][1] == c && map[2][0] == c) {return true; }
 
-        return false;
-    }
-
+        return false;*/
 }
+
+
